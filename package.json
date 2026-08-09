@@ -25,7 +25,8 @@
     "files": [
       "main.js",
       "server.js",
-      "public/**/*"
+      "public/**/*",
+      "package.json"
     ],
     "extraResources": [
       {
@@ -47,7 +48,14 @@
       "target": [
         "nsis",
         "portable"
-      ]
+      ],
+      "artifactName": "${productName} Setup ${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
     }
   },
   "author": "Azman Sarker",
