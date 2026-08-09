@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro Media Studio | Next-Gen Downloader</title>
+    <style>
+        :root {
+            --bg-grad: radial-gradient(circle at 50% 0%, #1a233a 0%, #080a0f 100%);
+            --card-bg: rgba(22, 27, 38, 0.75);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --accent-glow: #007aff;
+            --accent-gradient: linear-gradient(135deg, #007aff 0%, #00d2ff 100%);
+            --success-gradient: linear-gradient(135deg, #30d158 0%, #00e676 100%);
+            --text-main: #f0f4f8;
+            --text-sub: #94a3b8;
+            --input-bg: rgba(10, 13, 20, 0.6);
+        }
+
+        * {
+            box-sizing: border-box;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg-grad);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* Glass Container */
+        .container {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            padding: 32px;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 540px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7),
+                        0 0 40px rgba(0, 122, 255, 0.1);
+            position: relative;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .header h2 {
+            margin: 0;
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            margin: 6px 0 0 0;
+            font-size: 13px;
+            color: var(--text-sub);
+        }
+
+        /* Input Field with Glow */
+        .input-group {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 16px;
+            border-radius: 14px;
+            border: 1px solid var(--card-border);
+            background: var(--input-bg);
+            color: var(--text-main);
+            font-size: 14px;
+            outline: none;
+        }
+
+        input[type="text"]:focus, select:focus {
+            border-color: var(--accent-glow);
+            box-shadow: 0 0 15px rgba(0, 122, 255, 0.3);
+            background: rgba(15, 20, 30, 0.8);
+        }
+
+        /* Tab Navigation */
+        .tabs {
+            display: flex;
+            background: rgba(10, 13, 20, 0.5);
+            padding: 4px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid var(--card-border);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            color: var(--text-sub);
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .tab-btn.active {
+            background: var(--accent-gradient);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Interactive Grid Checkboxes */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .checkbox-card {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--card-border);
+            padding: 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 12px;
+            color: var(--text-sub);
+            user-select: none;
+        }
+
+        .checkbox-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .checkbox-card input {
+            margin-right: 10px;
+            accent-color: var(--accent-glow);
+            transform: scale(1.1);
+        }
+
+        label {
+            font-size: 12px;
+            color: var(--text-sub);
+            margin: 12px 0 6px 0;
+            display: block;
+            font-weight: 600;
+        }
+
+        /* Dynamic Action Buttons */
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 12px;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-fetch {
+            background: var(--accent-gradient);
+            color: white;
+            box-shadow: 0 8px 20px rgba(0, 122, 255, 0.3);
+        }
+
+        .btn-fetch:hover {
+            box-shadow: 0 10px 25px rgba(0, 122, 255, 0.5);
+            transform: translateY(-1px);
+        }
+
+        .btn-download {
+            background: var(--success-gradient);
+            color: white;
+            box-shadow: 0 8px 20px rgba(48, 209, 88, 0.3);
+        }
+
+        .btn-download:hover {
+            box-shadow: 0 10px 25px rgba(48, 209, 88, 0.5);
+            transform: translateY(-1px);
+        }
+
+        button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Preview Section */
+        #previewSection {
+            display: none;
+            margin-top: 24px;
+            border-top: 1px solid var(--card-border);
+            padding-top: 20px;
+        }
+
+        #videoTitle {
+            font-size: 14px;
+            margin: 0 0 14px 0;
+            font-weight: 600;
+            line-height: 1.5;
+            color: var(--text-main);
+        }
+
+        .video-wrapper {
+            position: relative;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        video {
+            width: 100%;
+            display: block;
+            max-height: 240px;
+            background: #000;
+        }
+
+        /* Dynamic Progress Bar */
+        .progress-box {
+            display: none;
+            margin-top: 18px;
+            background: rgba(10, 13, 20, 0.6);
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid var(--card-border);
+        }
+
+        .progress-bar-bg {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            height: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar-fill {
+            background: var(--success-gradient);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px rgba(48, 209, 88, 0.8);
+        }
+
+        #progressText {
+            font-size: 12px;
+            text-align: center;
+            margin-top: 8px;
+            color: var(--text-sub);
+            font-weight: 600;
+        }
+
+        #status {
+            margin-top: 14px;
+            font-size: 13px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        /* Signature Footer Styling */
+        .footer-signature {
+            margin-top: 24px;
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-sub);
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            border-top: 1px dashed var(--card-border);
+            padding-top: 16px;
+            font-weight: 500;
+        }
+
+        .footer-signature span {
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h2>Pro Media Studio</h2>
+            <p>Advanced Video Editing & Downloader Engine</p>
+        </div>
+
+        <div class="input-group">
+            <input type="text" id="url" placeholder="Paste YouTube / Reel / Video URL here...">
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('tab-main')">Main</button>
+            <button class="tab-btn" onclick="switchTab('tab-advanced')">Format & Quality</button>
+            <button class="tab-btn" onclick="switchTab('tab-tools')">Quick Tools</button>
+        </div>
+
+        <!-- Tab 1: Main -->
+        <div id="tab-main" class="tab-content active">
+            <label class="checkbox-card">
+                <input type="checkbox" id="useCookies">
+                Use Chrome Session (For Members / Private Videos)
+            </label>
+        </div>
+
+        <!-- Tab 2: Advanced Format -->
+        <div id="tab-advanced" class="tab-content">
+            <label>Select Format:</label>
+            <select id="quality">
+                <option value="video">Best Video Quality</option>
+                <option value="audio_mp3">Audio Only (320kbps MP3 + Cover)</option>
+                <option value="audio_wav">Audio Only (Lossless WAV)</option>
+            </select>
+
+            <label>Max Resolution Limit:</label>
+            <select id="resolution">
+                <option value="best">Best Available (4K / 1080p)</option>
+                <option value="1080">1080p Full HD</option>
+                <option value="720">720p HD</option>
+            </select>
+
+            <label>Video Trimming (Start - End Time):</label>
+            <div class="grid-2">
+                <input type="text" id="startTime" placeholder="00:00:10">
+                <input type="text" id="endTime" placeholder="00:00:40">
+            </div>
+
+            <label>Save Directory:</label>
+            <input type="text" id="saveLocation" placeholder="~/Downloads">
+        </div>
+
+        <!-- Tab 3: Quick Tools -->
+        <div id="tab-tools" class="tab-content">
+            <label>Processing Options:</label>
+            <div class="grid-2">
+                <label class="checkbox-card">
+                    <input type="checkbox" id="downloadMainMedia" checked> Video / Audio
+                </label>
+                <label class="checkbox-card">
+                    <input type="checkbox" id="downloadThumb"> HD Thumbnail
+                </label>
+                <label class="checkbox-card">
+                    <input type="checkbox" id="downloadSub"> Subtitles (.srt)
+                </label>
+                <label class="checkbox-card">
+                    <input type="checkbox" id="convertGif"> Convert GIF
+                </label>
+                <label class="checkbox-card">
+                    <input type="checkbox" id="cropShorts"> Crop 9:16 (Reels)
+                </label>
+            </div>
+        </div>
+
+        <button id="fetchBtn" class="btn btn-fetch" onclick="fetchVideoPreview()">Fetch Preview</button>
+
+        <!-- Preview Section -->
+        <div id="previewSection">
+            <p id="videoTitle"></p>
+            <div class="video-wrapper">
+                <video id="videoPlayer" controls></video>
+            </div>
+
+            <button id="downloadBtn" class="btn btn-download" onclick="startDownload()">Start Processing</button>
+
+            <div class="progress-box" id="progressBox">
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progressFill"></div>
+                </div>
+                <div id="progressText">Processing: 0%</div>
+            </div>
+        </div>
+
+        <div id="status"></div>
+
+        <!-- Signature Footer -->
+        <div class="footer-signature">
+            Created by <span>Azman Sarker</span>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        async function fetchVideoPreview() {
+            const url = document.getElementById('url').value;
+            const useCookies = document.getElementById('useCookies').checked;
+            const status = document.getElementById('status');
+            const fetchBtn = document.getElementById('fetchBtn');
+            const previewSection = document.getElementById('previewSection');
+            const videoPlayer = document.getElementById('videoPlayer');
+            const videoTitle = document.getElementById('videoTitle');
+
+            if (!url) {
+                status.innerText = "Please paste a video link first!";
+                status.style.color = "#ff453a";
+                return;
+            }
+
+            status.innerText = "Fetching media metadata...";
+            status.style.color = "#007aff";
+            fetchBtn.disabled = true;
+
+            try {
+                const res = await fetch('/api/info', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url, useCookies })
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    videoTitle.innerText = data.title;
+                    videoPlayer.src = data.streamUrl;
+                    previewSection.style.display = "block";
+                    status.innerText = "Preview loaded successfully!";
+                    status.style.color = "#30d158";
+                } else {
+                    status.innerText = "Error: " + data.error;
+                    status.style.color = "#ff453a";
+                }
+            } catch (err) {
+                status.innerText = "Server connection error.";
+                status.style.color = "#ff453a";
+            } finally {
+                fetchBtn.disabled = false;
+            }
+        }
+
+        function startDownload() {
+            const url = encodeURIComponent(document.getElementById('url').value);
+            const quality = document.getElementById('quality').value;
+            const useCookies = document.getElementById('useCookies').checked;
+            const resolution = document.getElementById('resolution').value;
+            const startTime = document.getElementById('startTime').value;
+            const endTime = document.getElementById('endTime').value;
+            const saveLocation = encodeURIComponent(document.getElementById('saveLocation').value);
+            const convertGif = document.getElementById('convertGif').checked;
+            const cropShorts = document.getElementById('cropShorts').checked;
+            const downloadSub = document.getElementById('downloadSub').checked;
+            const downloadThumb = document.getElementById('downloadThumb').checked;
+            const downloadMainMedia = document.getElementById('downloadMainMedia').checked;
+
+            const status = document.getElementById('status');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const progressBox = document.getElementById('progressBox');
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+
+            status.innerText = "Processing task...";
+            status.style.color = "#007aff";
+            downloadBtn.disabled = true;
+            progressBox.style.display = "block";
+            progressFill.style.width = "0%";
+
+            const queryParams = `url=${url}&quality=${quality}&useCookies=${useCookies}&resolution=${resolution}&startTime=${startTime}&endTime=${endTime}&saveLocation=${saveLocation}&convertGif=${convertGif}&cropShorts=${cropShorts}&downloadSub=${downloadSub}&downloadThumb=${downloadThumb}&downloadMainMedia=${downloadMainMedia}`;
+
+            const eventSource = new EventSource(`/api/download-stream?${queryParams}`);
+
+            eventSource.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+
+                if (data.status === 'downloading') {
+                    progressFill.style.width = `${data.percent}%`;
+                    progressText.innerText = `Processing: ${data.percent}%`;
+                } else if (data.status === 'completed') {
+                    progressFill.style.width = "100%";
+                    progressText.innerText = "100% Completed";
+                    status.innerText = `Task Completed! ${data.message}`;
+                    status.style.color = "#30d158";
+                    downloadBtn.disabled = false;
+                    eventSource.close();
+                } else if (data.status === 'error') {
+                    status.innerText = "Error: " + data.message;
+                    status.style.color = "#ff453a";
+                    downloadBtn.disabled = false;
+                    eventSource.close();
+                }
+            };
+
+            eventSource.onerror = () => {
+                status.innerText = "Task completed.";
+                status.style.color = "#30d158";
+                downloadBtn.disabled = false;
+                eventSource.close();
+            };
+        }
+    </script>
+</body>
+</html>

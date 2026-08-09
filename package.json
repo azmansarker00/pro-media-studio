@@ -1,0 +1,55 @@
+{
+  "name": "pro-media-studio",
+  "productName": "Pro Media Studio",
+  "version": "1.0.0",
+  "description": "Advanced Video Editing & Downloader Engine by Azman Sarker",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build:mac": "electron-builder --mac",
+    "build:win": "electron-builder --win"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "com.azmansarker.promediastudio",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "server.js",
+      "public/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "binaries",
+        "to": "binaries",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.video",
+      "target": [
+        "dmg"
+      ],
+      "icon": "build/icon.png"
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    }
+  },
+  "author": "Azman Sarker",
+  "license": "ISC"
+}
